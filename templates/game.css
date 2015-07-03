@@ -1,0 +1,32 @@
+table#game_board {
+    margin: 20px auto auto;
+    border: 2px;
+    box-shadow: 0px 0px 10px #000;
+    background-color:white;
+
+}
+
+
+table#game_board tr th.header, table#game_board tr td.b_cell,table#game_board tr td.w_cell{
+    height: 50px;
+    width: 50px;
+    border: 0px;
+}
+
+
+table#game_board tr td.b_cell{
+    background-color: dimgrey;
+    
+}
+
+
+table#game_board tr td.w_cell{
+    background-color: white;
+    
+}
+
+img.figure{
+    height: 50px;
+    width: 50px;
+}
+
