@@ -1,8 +1,9 @@
 table#game_board {
     margin: 20px auto auto;
-    border: 2px;
+    border: 0px;
     box-shadow: 0px 0px 10px #000;
     background-color:white;
+    border-collapse: collapse;
 
 }
 
@@ -25,8 +26,20 @@ tr td.b_cell{
     
 }
 
-img.figure{
+img.figure ,img.figure_a{
+    position: absolute;
     height: 50px;
     width: 50px;
+}
+
+img.figure_a{
+
+    box-shadow: 0px 0px 10px #FF3300;
+        
+}
+
+img#w_king {
+    left: 200px;
+    top: 200px;
 }
 
