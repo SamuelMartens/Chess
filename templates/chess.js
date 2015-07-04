@@ -24,3 +24,5 @@ alert("The image is located at: " + position.x + ", " + position.y);
 });
 
 
+
+

@@ -6,11 +6,13 @@
         <script src="angular.js" type="text/javascript"></script>
         <script src="jquery-2.1.4.min.js" type="text/javascript"></script>
         <script src="chess.js" type="text/javascript"></script>
+        <script src="angular_js/chessControllers.js" type="text/javascript"></script>
+        <script src="angular_js/chessModule.js" type="text/javascript"></script>
         <link rel="stylesheet" href="game.css">
     </head>
     
-    <body>
-        <table id= "game_board">
+    <body ng-app ="chessModule" ng-controller = "coordCtrl" >
+        <table id= "game_board" >
             <tr>
                 <th class = "header">  </th>
                 <th class = "header"> a </th>
@@ -23,6 +25,7 @@
                 <th class = "header"> h </th>
                 <th class = "header">  </th>
             </tr>
+            <div>
             <tr>
                 <th class = "header"> 8 </th>
                 <td class = "w_cell" id ="8,8"> </td>
@@ -47,6 +50,8 @@
                 <td class = "w_cell" id ="1,7"> </td>
                 <th class = "header"> 7 </th>
             </tr>
+                </div>
+              <div>
             <tr>
                 <th class = "header"> 6 </th>
                 <td class = "w_cell" id ="8,6"> </td>
@@ -71,6 +76,7 @@
                 <td class = "w_cell" id ="1,5"> </td>
                 <th class = "header"> 5 </th>
             </tr>
+                  <div>
             <tr>
                 <th class = "header"> 4 </th>
                 <td class = "w_cell" id ="8,4"> </td>

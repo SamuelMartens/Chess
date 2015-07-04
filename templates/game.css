@@ -14,13 +14,13 @@ table#game_board tr th.header, table#game_board tr td.b_cell,table#game_board tr
 }
 
 
-table#game_board tr td.b_cell{
+tr td.b_cell{
     background-color: dimgrey;
     
 }
 
 
-table#game_board tr td.w_cell{
+ td.w_cell{
     background-color: white;
     
 }
