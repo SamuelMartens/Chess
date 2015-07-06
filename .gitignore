@@ -1,2 +1,5 @@
 tempaltes/jquery-2.1.4.min.js
 tempaltes/angular.js
+chess/settings_local.py
+.idea/
+chess/__pycache__/settings_local.cpython-34.pyc
