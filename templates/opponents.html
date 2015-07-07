@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %} Opponents {% endblock %}
+
+
+{% block content %}
+{% verbatim %}
+<div ng-app="chessModule" id = "opponets" ng-controller="oppCtrl">
+    <h1>Противники  </h1>
+
+     <ul class="opponents">
+         <li ng-repeat="user in opponents">
+             {{user}}
+         </li>
+     </ul>
+
+</div>
+
+
+{% endverbatim %}
+{% endblock %}

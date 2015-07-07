@@ -1,9 +1,12 @@
-var app = angular.module("chessModule", ['ngAnimate']);
+var app = angular.module("chessModule", []);
 
-app.controller("coordCtrl", function($scope){
+var CHESS_URL = "http://127.0.0.1:8000/chess";
+var CHESS_URL2 = "/chess";
+
+app.controller("coordCtrl", function($scope) {
     $scope.csFig = { id:"" , xPos:0, yPos:0 };
     
-    
+
     $scope.getEl = function (id) {
         return (document.getElementById(id));
     }
@@ -52,4 +55,17 @@ app.controller("coordCtrl", function($scope){
         //Обнулить значение выбраной фигуры 
     }
     
+});
+
+
+app.controller ("oppCtrl", function($scope, $http) {
+     alert("oppCtrl!");
+     $scope.opponents = {};
+     $http.post(CHESS_URL2 + "/get_opponents/","js_request"
+
+        ).success (function(data, status, headers, config) {
+        alert("succes");
+        $scope.opponents = data;
+    });
+
 });
