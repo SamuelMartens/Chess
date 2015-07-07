@@ -28,7 +28,8 @@ def get_opponents(request):
     if request.method != "POST":
         return HttpResponse("Request is not post")
 
-
+    message = request.POST.get("data")
+    print (message)
     opponents = User.objects.all().exclude (id = request.user.id)
     print (opponents)
     opponents_r=[]

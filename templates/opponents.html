@@ -7,16 +7,25 @@
 
 {% block content %}
 {% verbatim %}
-<div ng-app="chessModule" id = "opponets" ng-controller="oppCtrl">
-    <h1>Противники  </h1>
+<div ng-app="chessModule" id = "opponents" ng-controller="oppCtrl">
 
-     <ul class="opponents">
-         <li ng-repeat="user in opponents">
-             {{user}}
-         </li>
-     </ul>
+            <h1>Противники  </h1>
+
+            <ul class="op_list">
+                <li ng-repeat="user in opponents" ng-click="send_challenge($event)" id="{{user}}">
+                    {{user}}
+                </li>
+            </ul>
+<div  class="b111">
+        <div id="challenge_block">
+            <h4>Вы бросили вызов противнику {{challenge_target}}</h4>
+            <div id="load_line"></div>
+        </div>
 
 </div>
+
+</div>
+
 
 
 {% endverbatim %}

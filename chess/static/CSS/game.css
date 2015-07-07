@@ -1,3 +1,7 @@
+body{
+    margin:0px;
+}
+
 table#game_board {
     margin: 20px auto auto;
     border: 0px;
@@ -41,5 +45,39 @@ img.figure_a{
 img#w_king {
     left: 200px;
     top: 200px;
+}
+
+
+
+div.b111 {
+    width:100%;
+    min-height:100%;
+    background-color:rgba(0,0,0,0.5);
+    overflow:hidden;
+    position:fixed;
+    top: 0px;
+}
+
+
+div#challenge_block {
+    margin: 200px auto 0px auto;
+    width: 300px;
+    height: 100px;
+    padding: 10px;
+    border-radius:5px;
+    box-shadow: 0px 0px 10px #000;
+    background-color:white;
+}
+
+
+div#load_line {
+    height:5px;
+    width:280px;
+    background-color:#CC0000;
+
+}
+
+div.op_list{
+    margin-left:10px;
 }
 

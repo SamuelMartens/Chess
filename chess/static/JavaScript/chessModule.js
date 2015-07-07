@@ -1,7 +1,7 @@
 var app = angular.module("chessModule", []);
 
-var CHESS_URL = "http://127.0.0.1:8000/chess";
-var CHESS_URL2 = "/chess";
+
+var CHESS_URL = "/chess";
 
 app.controller("coordCtrl", function($scope) {
     $scope.csFig = { id:"" , xPos:0, yPos:0 };
@@ -59,13 +59,28 @@ app.controller("coordCtrl", function($scope) {
 
 
 app.controller ("oppCtrl", function($scope, $http) {
-     alert("oppCtrl!");
-     $scope.opponents = {};
-     $http.post(CHESS_URL2 + "/get_opponents/","js_request"
+     $("div.b111").hide();
+     $http.post(CHESS_URL + "/get_opponents/",'{"js_request":"kkk"}'
 
         ).success (function(data, status, headers, config) {
-        alert("succes");
         $scope.opponents = data;
+    }).
+    error(function(data, status, headers, config){
+        $scope.opponents = "Error, send message to administrator"
     });
+
+
+    $scope.send_challenge = function (eventObj) {
+        $("div.b111").show();
+        $scope.challenge_target = eventObj.target.id;
+        $("div#load_line").animate({width:"0px",},20000);
+        setTimeout(function () {
+            $("div.b111").hide();
+            $("div#load_line").css({width:"280px",});
+            }, 20000);
+
+
+    };
+
 
 });
