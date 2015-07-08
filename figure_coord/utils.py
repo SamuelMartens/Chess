@@ -11,5 +11,4 @@ def json_response(obj):
     as an argument and returns an HttpResponse object containing
     the data from the object exported into the JSON format.
     """
-    print ("JSON")
     return HttpResponse(json.dumps(obj), content_type="application/json")

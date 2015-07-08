@@ -4,5 +4,7 @@ urlpatterns = patterns("figure_coord.views",
                        #url (r"^game/(?P<thread_id>\d+)/$", "game_view"),
                       # url (r"^send_chellenge/$", "send_chellenge"),
                        url (r"^opponents/$", "opponents"),
-                       url(r"^get_opponents/$", "get_opponents")
+                       url(r"^get_opponents/$", "get_opponents"),
+                       url(r"^challenge/send/$", "send_challenge"),
+                       url(r"^challenge/get/$", "get_challenge"),
                        )

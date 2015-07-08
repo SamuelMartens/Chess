@@ -59,7 +59,7 @@ div.b111 {
 }
 
 
-div#challenge_block {
+div.challenge_block {
     margin: 200px auto 0px auto;
     width: 300px;
     height: 100px;

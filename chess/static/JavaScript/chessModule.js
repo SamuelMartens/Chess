@@ -60,26 +60,72 @@ app.controller("coordCtrl", function($scope) {
 
 app.controller ("oppCtrl", function($scope, $http) {
      $("div.b111").hide();
-     $http.post(CHESS_URL + "/get_opponents/",'{"js_request":"kkk"}'
 
+
+     $http.post(CHESS_URL + "/get_opponents/"
         ).success (function(data, status, headers, config) {
         $scope.opponents = data;
+        //Тут буду вызывать функцию для проверки вызовов
     }).
     error(function(data, status, headers, config){
         $scope.opponents = "Error, send message to administrator"
     });
 
 
+    $scope.checkChallenge = function () {
+        $http.post(CHESS_URL + "/challenge/get/").success(function (data, status, headers, config) {
+            $scope.response_data = data;
+            if ($scope.response_data.challenge != "" && $scope.response_data.challenge != $scope.response_data.user) {
+                console.log("Y c");
+                $("div#challenge_got").show();
+
+            }else {
+
+                //setTimeout($scope.checkChallenge(),10000);
+
+            }
+        });
+    };
+
+
+    $scope.checkChallenge();
+
+
     $scope.send_challenge = function (eventObj) {
-        $("div.b111").show();
         $scope.challenge_target = eventObj.target.id;
-        $("div#load_line").animate({width:"0px",},20000);
-        setTimeout(function () {
-            $("div.b111").hide();
-            $("div#load_line").css({width:"280px",});
-            }, 20000);
 
 
+        $http({
+            method: 'post',
+            url: CHESS_URL + "/challenge/send/",
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+                },
+            data: { 'target':$scope.challenge_target }
+             }).success (function (data, status, headers, config) {
+
+                $scope.response_data = data;
+
+                if ($scope.response_data.status == "Ok") {
+
+                    $("div#challenge_send").show();
+                    $("div#load_line").animate({width:"0px",},20000);
+                    setTimeout(function () {
+                    $("div.b111").hide();
+                    $("div#load_line").css({width:"280px",});
+                    }, 20000);
+
+
+                } else {
+
+                    alert ($scope.response_data.status);
+
+                };
+              });
     };
 
 

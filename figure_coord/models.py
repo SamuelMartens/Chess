@@ -62,6 +62,12 @@ class Move(models.Model):
     timestamp = models.DateTimeField( auto_now_add = True , db_index = True)
 
 
+class Challenge (models.Model):
+    sender = models.ForeignKey(User, related_name="challenge_sender")
+    target = models.ForeignKey(User, related_name="challenge_target")
+    timestamp = models.DateTimeField(auto_now_add=True )
+
+
 def update_last_move_datetime(sender,instance,created,**kwargs):
     """
     Update Game's last move field when
