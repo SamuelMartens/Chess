@@ -24,11 +24,11 @@
 
 </div>
 
-<div  class="b111" id = "chellange_got">
-        <div сlass="challenge_block">
-            <h4>Вы получили вызов от противника {{challenger}}</h4><br>
-            <input type = "button" value="Отказаться">
-            <input type="button" value="Принять">
+<div  class="b111" id = "challenge_get">
+        <div class="challenge_block">
+            <h4>Вы получили вызов от противника {{response_data.challenge_s}}</h4><br>
+            <input type = "button" value="Отказаться"  ng-click="refuseChallenge()">
+            <input type="button" value="Принять" ng-click="acceptChallenge">
         </div>
 
 </div>

@@ -58,14 +58,14 @@ app.controller("coordCtrl", function($scope) {
 });
 
 
-app.controller ("oppCtrl", function($scope, $http) {
+app.controller ("oppCtrl", function($scope, $http, $timeout) {
      $("div.b111").hide();
 
 
      $http.post(CHESS_URL + "/get_opponents/"
         ).success (function(data, status, headers, config) {
         $scope.opponents = data;
-        //Тут буду вызывать функцию для проверки вызовов
+        //Тут буду вызывать функцию для проверки принятия вызовов
     }).
     error(function(data, status, headers, config){
         $scope.opponents = "Error, send message to administrator"
@@ -75,13 +75,12 @@ app.controller ("oppCtrl", function($scope, $http) {
     $scope.checkChallenge = function () {
         $http.post(CHESS_URL + "/challenge/get/").success(function (data, status, headers, config) {
             $scope.response_data = data;
-            if ($scope.response_data.challenge != "" && $scope.response_data.challenge != $scope.response_data.user) {
-                console.log("Y c");
-                $("div#challenge_got").show();
+            if ($scope.response_data.challenge_t != "" && $scope.response_data.challenge_s != $scope.response_data.user) {
+                $("div#challenge_get").show();
 
             }else {
 
-                //setTimeout($scope.checkChallenge(),10000);
+                $timeout($scope.checkChallenge,2000);
 
             }
         });
@@ -93,7 +92,6 @@ app.controller ("oppCtrl", function($scope, $http) {
 
     $scope.send_challenge = function (eventObj) {
         $scope.challenge_target = eventObj.target.id;
-
 
         $http({
             method: 'post',
@@ -108,17 +106,18 @@ app.controller ("oppCtrl", function($scope, $http) {
             data: { 'target':$scope.challenge_target }
              }).success (function (data, status, headers, config) {
 
+                $("div#load_line").css({width:"280px",});
                 $scope.response_data = data;
 
                 if ($scope.response_data.status == "Ok") {
 
+                    $scope.checkChallengeAnswerd ($scope.challenge_target);
                     $("div#challenge_send").show();
                     $("div#load_line").animate({width:"0px",},20000);
-                    setTimeout(function () {
-                    $("div.b111").hide();
-                    $("div#load_line").css({width:"280px",});
+                    $timeout(function () {
+                        $("div.b111").hide();
+                        $timeout.cancel($scope.checkChallengeAnswerd);
                     }, 20000);
-
 
                 } else {
 
@@ -128,5 +127,78 @@ app.controller ("oppCtrl", function($scope, $http) {
               });
     };
 
+
+    $scope.refuseChallenge= function (challengeSender) {
+
+        $http({
+            method: 'post',
+            url: CHESS_URL + "/challenge/answerd_challenge/",
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+                },
+            data: { "sender":challengeSender, "operation":"refuse"  }
+            });
+
+
+        $("div#challenge_get").hide();
+        $scope.checkChallenge();
+    };
+
+
+    $scope.checkChallengeAnswerd = function (challengeTarget) {
+
+         $http({
+            method: 'post',
+            url: CHESS_URL + "/challenge/check_answerd/",
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+                },
+            data: { 'target':challengeTarget }
+             }).success(function (data, status, headers, config) {
+
+                $scope.answerd = data.answerd;
+
+                if ($scope.answerd == "wait") {
+
+                    $timeout($scope.checkChallengeAnswerd(challengeTarget), 2000);
+
+                }else{
+
+                   $("div.b111").hide();
+
+                };
+             });
+
+
+
+    };
+
+
+    $scope.acceptChallenge = function () {
+
+        $http({
+            method: 'post',
+            url: CHESS_URL + "/challenge/answerd_challenge/",
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+                },
+            data: { "sender":challengeSender, "operation":"accept"  }
+            });
+
+            $("div#challenge_get").show();
+
+    };
 
 });

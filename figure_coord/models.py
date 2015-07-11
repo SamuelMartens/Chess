@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 
 GAME_STATUS_CHOICES = (
+    ("n","new_game"),
     ("w", "white_player_turn"),
     ("b", "black_player_turn"),
     ("f", "finished_game"),
@@ -18,7 +19,7 @@ class Game (models.Model):
     created = models.DateTimeField(auto_now_add = True)
     w_player = models.ForeignKey(User, related_name="game_whiteplayer")
     b_player = models.ForeignKey(User, related_name="game_blackplayer")
-    length = models.DateTimeField()
+    length = models.IntegerField(default=0)
     status = models.CharField( max_length = 1, choices = GAME_STATUS_CHOICES)
     winner = models.ForeignKey(User , blank = True , null = True)
     last_move = models.DateTimeField(null=True, blank=True, db_index=True)
@@ -62,9 +63,17 @@ class Move(models.Model):
     timestamp = models.DateTimeField( auto_now_add = True , db_index = True)
 
 
+CHALLENGE_STATUS_CHOICES = (
+    ("u","undefined"),
+    ("a","accepted"),
+    ("r","rejected")
+)
+
+
 class Challenge (models.Model):
     sender = models.ForeignKey(User, related_name="challenge_sender")
     target = models.ForeignKey(User, related_name="challenge_target")
+    status = models.CharField( max_length=1, choices=CHALLENGE_STATUS_CHOICES ,default="u")
     timestamp = models.DateTimeField(auto_now_add=True )
 
 

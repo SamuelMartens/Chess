@@ -6,16 +6,15 @@ from django.shortcuts import render_to_response
 
 from figure_coord.utils import json_response
 
-from figure_coord.models import Challenge
+from figure_coord.models import Challenge, Game
 
 
 import json
-
+import random
 
 @csrf_exempt
-@login_required #Написать параметр LOGIN_URL в настройках, чтобы знать куда перезодить если что
+@login_required #Написать параметр LOGIN_URL в настройках, чтобы знать куда переходить если что
 def opponents (request):
-
 
     return render_to_response("opponents.html")
 
@@ -74,18 +73,61 @@ def get_challenge(request):
 
     if request.method != "POST":
         return HttpResponse ("Request is not POST")
-    print ("user")
+
     user = request.user
 
     try:
+        print ("user")
         challenge = Challenge.objects.filter(target = user).order_by("timestamp")[0]
+
     except:
-        return json_response({"user":user.username, "challenge":""})
-    challenge.delete()
-    return json_response({"user":user.username,"challenge":challenge})
+        return json_response({"user":user.username, "challenge_t":""})
+    #challenge.delete()
+    return json_response({"user":user.username,
+                          "challenge_t":challenge.target.username,
+                          "challenge_s":challenge.sender.username,
+                          })
 
 
+@csrf_exempt
+@login_required
+def check_answerd(request):
+
+    if request.method != "POST":
+        return HttpResponse("Request is not POST")
+
+    try:
+        game = Game.objects.get()
 
 
+@csrf_exempt
+@login_required
+def answer_challenge(request):
+
+    if request.method != "POST":
+        return HttpResponse ("Request is not POST")
+
+    user= request.user
+    sender = User.objects.get(username = request.POST.get("sender"))
+    operation = request.POST.get("operation")
+
+    if operation == "accept":
+
+        sides = [user,sender]
+        random.shuffle(sides)
+
+        challenge = Challenge.objects.get(sender = sender, target = user ).update(status = "a")
+
+        Game.objects.create(w_player = sides[0],
+                        b_player = sides[1],
+                        status = "n",
+                        )
+
+        return json_response({"answerd":"accept"})
 
 
+    if operation == "refuse":
+
+        challenge = Challenge.objects.get(sender = sender, target = user ).update(status = "r")
+
+        return json_response({"answerd":"refuse"})
