@@ -161,7 +161,7 @@ app.controller ("oppCtrl", function($scope, $http, $timeout) {
                 str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                 return str.join("&");
                 },
-            data: { 'target':challengeTarget }
+            data: { "target":challengeTarget }
              }).success(function (data, status, headers, config) {
 
                 $scope.answerd = data.answerd;
@@ -173,6 +173,7 @@ app.controller ("oppCtrl", function($scope, $http, $timeout) {
                 }else{
 
                    $("div.b111").hide();
+                   alert($scope.answerd);
 
                 };
              });

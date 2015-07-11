@@ -7,6 +7,6 @@ urlpatterns = patterns("figure_coord.views",
 
                        url(r"^challenge/send/$", "send_challenge"),
                        url(r"^challenge/get/$", "get_challenge"),
-                       #url(r"^challenge/check_answerd/$", "check_answerd"),
-                       url(r"^challenge/ansewrd_challenge/$", "answerd_challenge")
+                       url(r"^challenge/check_answerd/$", "check_answerd"),
+                       url(r"^challenge/answerd_challenge/$", "answerd_challenge")
                        )

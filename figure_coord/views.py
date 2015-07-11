@@ -78,7 +78,7 @@ def get_challenge(request):
 
     try:
         print ("user")
-        challenge = Challenge.objects.filter(target = user).order_by("timestamp")[0]
+        challenge = Challenge.objects.filter(target = user, status = "u").order_by("timestamp")[0]
 
     except:
         return json_response({"user":user.username, "challenge_t":""})
@@ -96,13 +96,28 @@ def check_answerd(request):
     if request.method != "POST":
         return HttpResponse("Request is not POST")
 
+    user = request.user
     try:
-        game = Game.objects.get()
+        target = User.objects.get("target")
+        challenge_status = Challenge.objects.get(sender = user, target = target ).status
+    except User.DoesNotExist:
+        return HttpResponse("Target user does not exis")
+    except Challenge.DoesNotExist:
+        return HttpResponse("Challenge does not exist")
+
+    if challenge_status == "u":
+        answerd = "wait"
+    elif challenge_status == "r":
+        answerd = "no"
+    elif challenge_status == "a":
+        answerd = "yes"
+    return json_response({"answerd":answerd})
+
 
 
 @csrf_exempt
 @login_required
-def answer_challenge(request):
+def answerd_challenge(request):
 
     if request.method != "POST":
         return HttpResponse ("Request is not POST")
