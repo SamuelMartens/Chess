@@ -8,12 +8,40 @@ from django.contrib.auth.models import User
 
 
 GAME_STATUS_CHOICES = (
-    ("n","new_game"),
+    ("i","init_game"),
     ("w", "white_player_turn"),
     ("b", "black_player_turn"),
     ("f", "finished_game"),
 )
 
+FIGURE_STATUS_CHOICES = (
+    ("a", "alive"),
+    ("d", "death"),
+)
+
+FIGURE_TEAM_CHOICES = (
+    ("b" , "black_team"),
+     ("w" , "white_teak"),
+)
+
+FIGURE_MOVE_TYPE_CHOICES = (
+    ("m", "move"),
+    ("d", "death_from_somedody"),
+    ("k", "kill_somebody"),
+)
+
+CHALLENGE_STATUS_CHOICES = (
+    ("u","undefined"),
+    ("a","accepted"),
+    ("r","rejected"),
+)
+
+class Figure (models.Model):
+    name  = models.CharField(max_length = 30)
+    team = models.CharField( max_length = 1 , choices = FIGURE_TEAM_CHOICES )
+    coord_x = models.IntegerField()
+    coord_y = models.IntegerField()
+    status = models.CharField( max_length = 1, choices = FIGURE_STATUS_CHOICES)
 
 class Game (models.Model):
     created = models.DateTimeField(auto_now_add = True)
@@ -21,53 +49,20 @@ class Game (models.Model):
     b_player = models.ForeignKey(User, related_name="game_blackplayer")
     length = models.IntegerField(default=0)
     status = models.CharField( max_length = 1, choices = GAME_STATUS_CHOICES)
-    winner = models.ForeignKey(User , blank = True , null = True)
-    last_move = models.DateTimeField(null=True, blank=True, db_index=True)
+    winner = models.ForeignKey(User, blank = True , null = True)
+    last_move = models.ForeignKey(Move, null=True, blank=True)
 
-
-FIGURE_STATUS_CHOICES = (
-    ("a", "alive"),
-    ("d", "death"),
-)
-
-
-FIGURE_TEAM_CHOICES = (
-    ("b" , "black_team"),
-     ("w" , "white_teak"),
-)
-
-
-class Figure (models.Model):
-    name  = models.CharField(max_length = 30)
-    team = models.CharField ( max_length = 1 , choices = FIGURE_TEAM_CHOICES )
-    coord = models.CharField (max_length = 15)
-    status = models.CharField( max_length = 1, choices = FIGURE_STATUS_CHOICES)
-    equation = models.CharField( max_length=20)
-
-
-FIGURE_MOVE_TYPE_CHOICES = (
-    ("m", "move"),
-    ("d", "death_from_somedody"),
-    ("k", "kill_somebody")
-)
-
-
-class Move(models.Model):
+class Move (models.Model):
     # ifluential -  firgure which kill or killed by current figure
     figure = models.ForeignKey(Figure, related_name="move_figure")
-    game = models.ForeignKey (Game)
-    coord_from = models.CharField ( max_length = 15 ,blank = True, null = True)
-    coord_to = models.CharField ( max_length = 15 , blank = True, null = True)
+    game = models.ForeignKey(Game)
+    coord_from_x = models.IntegerField(blank = True, null = True)
+    coord_to_x = models.IntegerField(blank = True, null = True)
+    coord_from_y = models.IntegerField(blank = True, null = True)
+    coord_to_y = models.IntegerField(blank = True, null = True)
     move_type = models.CharField ( max_length = 1, choices = FIGURE_MOVE_TYPE_CHOICES)
-    influential = models.ForeignKey ( Figure , blank = True, null = True, related_name= "move_influential_figure")
+    influential = models.ForeignKey(Figure , blank = True, null = True, related_name= "move_influential_figure")
     timestamp = models.DateTimeField( auto_now_add = True , db_index = True)
-
-
-CHALLENGE_STATUS_CHOICES = (
-    ("u","undefined"),
-    ("a","accepted"),
-    ("r","rejected")
-)
 
 
 class Challenge (models.Model):
