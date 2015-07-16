@@ -27,7 +27,7 @@
 <div  class="b111" id = "challenge_get">
         <div class="challenge_block">
             <h4>Вы получили вызов от противника {{response_data.challenge_s}}</h4><br>
-            <input type = "button" value="Отказаться"  ng-click="refuseChallenge()">
+            <input type = "button" value="Отказаться"  ng-click="refuseChallenge(response_data.challenge_s)">
             <input type="button" value="Принять" ng-click="acceptChallenge">
         </div>
 

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response
 
 from figure_coord.utils import json_response
@@ -50,18 +50,14 @@ def send_challenge (requset):
     except User.DoesNotExist:
          return json_response({"status":"Target user does not exist"})
 
-
     if sender.username == target.username:
          return json_response({"status":"You cannot send challenge to yourself"})
 
-
     try:
-        print (sender)
         Challenge.objects.get (sender = sender)
 
     except Challenge.DoesNotExist:
         Challenge.objects.create(sender = sender, target = target)
-
         return json_response({"status":"Ok"})
 
     return json_response({"status":"You have already send challenge"})
@@ -77,7 +73,6 @@ def get_challenge(request):
     user = request.user
 
     try:
-        print ("user")
         challenge = Challenge.objects.filter(target = user, status = "u").order_by("timestamp")[0]
 
     except:
@@ -86,6 +81,7 @@ def get_challenge(request):
     return json_response({"user":user.username,
                           "challenge_t":challenge.target.username,
                           "challenge_s":challenge.sender.username,
+                          "challenge_status":challenge.status,
                           })
 
 
@@ -96,21 +92,28 @@ def check_answerd(request):
     if request.method != "POST":
         return HttpResponse("Request is not POST")
 
+    print("check_1")
     user = request.user
     try:
-        target = User.objects.get("target")
-        challenge_status = Challenge.objects.get(sender = user, target = target ).status
+        target = User.objects.get(username = request.POST.get("target"))
+        challenge = Challenge.objects.get(sender = user, target = target )
     except User.DoesNotExist:
         return HttpResponse("Target user does not exis")
     except Challenge.DoesNotExist:
         return HttpResponse("Challenge does not exist")
 
-    if challenge_status == "u":
+    print ("check_2")
+    if challenge.status == "u":
         answerd = "wait"
-    elif challenge_status == "r":
+        print ("check_w")
+    elif challenge.status == "r":
         answerd = "no"
-    elif challenge_status == "a":
+        challenge.delete()
+        print ("check_n")
+    elif challenge.status == "a":
         answerd = "yes"
+    print ("check_3")
+    print("target " + target.username)
     return json_response({"answerd":answerd})
 
 
@@ -122,12 +125,17 @@ def answerd_challenge(request):
     if request.method != "POST":
         return HttpResponse ("Request is not POST")
 
-    user= request.user
-    sender = User.objects.get(username = request.POST.get("sender"))
+    sender = request.POST.get("sender")
+
+    if sender != "":
+        sender = User.objects.get(username = sender)
+    else:
+        sender = request.user
+
     operation = request.POST.get("operation")
 
     if operation == "accept":
-
+        user = Challenge.objects.get(sender = sender).target
         sides = [user,sender]
         random.shuffle(sides)
 
@@ -137,12 +145,8 @@ def answerd_challenge(request):
                         b_player = sides[1],
                         status = "n",
                         )
-
         return json_response({"answerd":"accept"})
 
-
     if operation == "refuse":
-
-        challenge = Challenge.objects.get(sender = sender, target = user ).update(status = "r")
-
-        return json_response({"answerd":"refuse"})
+        Challenge.objects.filter(sender = sender).update(status = "r")
+    return json_response({"answerd":"refuse"})
