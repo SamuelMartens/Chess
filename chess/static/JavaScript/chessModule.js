@@ -2,6 +2,7 @@ var app = angular.module("chessModule", []);
 
 
 var CHESS_URL = "/chess";
+var CHESS_GAME_URL = "/chess/game"
 
 app.controller("coordCtrl", function($scope) {
     $scope.csFig = { id:"" , xPos:0, yPos:0 };
@@ -58,7 +59,7 @@ app.controller("coordCtrl", function($scope) {
 });
 
 
-app.controller ("oppCtrl", function($scope, $http, $timeout) {
+app.controller ("oppCtrl", function($scope, $http, $timeout, $window) {
      $("div.b111").hide();
 
 
@@ -185,19 +186,23 @@ app.controller ("oppCtrl", function($scope, $http, $timeout) {
                 $scope.answerd = data.answerd;
 
                 if ($scope.answerd == "wait") {
-                    //alert("wait");
                     $timeout(function() { $scope.checkChallengeAnswerd(challengeTarget); }, 2000);
-                }else{
+                };
+                if ($scope.answerd == "no") {
                    $("div.b111").hide();
                    $timeout.cancel($scope.checkChallengeAnswerd);
                    alert("Your opponent answerd: " + $scope.answerd);
+                };
+                if ($scope.answerd == "yes") {
+                   $timeout.cancel($scope.checkChallengeAnswerd);
+                   $timeout.cancel($scope.checkChallenge);
+                   $window.location.href = (CHESS_GAME_URL);
                 };
              });
     };
 
 
-    $scope.acceptChallenge = function () {
-
+    $scope.acceptChallenge = function (challengeSender) {
         $http({
             method: 'post',
             url: CHESS_URL + "/challenge/answerd_challenge/",
@@ -209,6 +214,9 @@ app.controller ("oppCtrl", function($scope, $http, $timeout) {
                 return str.join("&");
                 },
             data: { "sender":challengeSender, "operation":"accept"  }
+            }).success(function(data, status, headers, config){
+              $timeout.cancel($scope.checkChallenge);
+              $window.location.href = (CHESS_GAME_URL);
             });
 
             $("div#challenge_get").show();
